@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>SmartSpend - Budget</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f3f4f6;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 50px auto;
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #1e3a8a;
+      margin-bottom: 25px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 25px;
+    }
+
+    input {
+      padding: 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 1rem;
+      background-color: #f9fafb;
+      transition: 0.3s;
+    }
+
+    input:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+      outline: none;
+      background-color: white;
+    }
+
+    button {
+      background: linear-gradient(90deg, #2563eb, #1e3a8a);
+      color: white;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      padding: 10px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      background: linear-gradient(90deg, #1e3a8a, #2563eb);
+      box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      border: 1px solid #e5e7eb;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f1f5f9;
+      color: #1e293b;
+    }
+
+    td {
+      color: #334155;
+    }
+
+    .actions a {
+      color: #2563eb;
+      text-decoration: none;
+      font-weight: 600;
+      margin: 0 5px;
+    }
+
+    .actions a:hover {
+      text-decoration: underline;
+    }
+
+    .back {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: #1e3a8a;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .back:hover {
+      color: #2563eb;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Manage Your Budgets</h2>
+
+    <!-- ✅ Add Budget Form -->
+    <form th:action="@{/budget/add}" method="post">
+      <input type="text" name="category" placeholder="Enter Category (e.g. Food, Travel)" required />
+      <input type="number" name="limitAmount" placeholder="Enter Limit Amount (₹)" step="0.01" required />
+      <button type="submit">💾 Save Budget</button>
+    </form>
+
+    <!-- ✅ Display Existing Budgets -->
+    <table>
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Limit Amount</th>
+          <th>Month</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="b : ${budgets}">
+          <td th:text="${b.category}">Category</td>
+          <td th:text="${b.limitAmount}">1000</td>
+          <td th:text="${b.month}">OCTOBER</td>
+          <td class="actions">
+            <a th:href="@{'/budget/delete/' + ${b.id}}">🗑 Delete</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <a class="back" th:href="@{/dashboard}">⬅ Back to Dashboard</a>
+  </div>
+
+</body>
+</html>
