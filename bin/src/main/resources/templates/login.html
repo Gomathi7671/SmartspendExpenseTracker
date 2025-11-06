@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Login - SmartSpend</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #4f46e5, #3b82f6);
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #333;
+    }
+
+    .container {
+      background: #ffffff;
+      padding: 40px 50px;
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #1e3a8a;
+      margin-bottom: 25px;
+      font-size: 1.8rem;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    label {
+      text-align: left;
+      font-weight: 600;
+      color: #374151;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      font-size: 1rem;
+      background-color: #f9fafb;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+      background-color: #fff;
+    }
+
+    button {
+      background: linear-gradient(90deg, #1e3a8a, #3b82f6);
+      color: white;
+      font-weight: 600;
+      font-size: 1rem;
+      border: none;
+      padding: 10px;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      background: linear-gradient(90deg, #3b82f6, #1e3a8a);
+      box-shadow: 0 4px 15px rgba(30, 58, 138, 0.3);
+    }
+
+    .error {
+      color: red;
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+
+    p {
+      margin-top: 20px;
+      color: #555;
+      font-size: 0.95rem;
+    }
+
+    a {
+      color: #1e3a8a;
+      font-weight: 600;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    a:hover {
+      color: #3b82f6;
+      text-decoration: underline;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 30px 25px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Welcome Back</h1>
+
+    <div th:if="${error}" th:text="${error}" class="error"></div>
+
+    <form th:action="@{/login}" method="post">
+      <label>Email:
+        <input type="email" name="email" required />
+      </label>
+
+      <label>Password:
+        <input type="password" name="password" required />
+      </label>
+
+      <button type="submit">Login</button>
+    </form>
+
+    <p><a th:href="@{/forgot-password}">Forgot Password?</a></p>
+    <p>Don’t have an account? <a th:href="@{/signup}">Create account</a></p>
+  </div>
+
+</body>
+</html>

@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.5.7</version>
+		<version>3.5.6</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
@@ -47,17 +47,7 @@
 </dependency>
 
 <!-- (Optional but common) For STOMP support with WebSocket -->
- <!-- ✅ WebSocket support (STOMP + SockJS) -->
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-websocket</artifactId>
-    </dependency>
 
-    <!-- ✅ Messaging support (for SimpMessagingTemplate) -->
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-websocket</artifactId>
-    </dependency>
 <!-- iText PDF library -->
 <dependency>
     <groupId>com.itextpdf</groupId>
