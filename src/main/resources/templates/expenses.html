@@ -91,7 +91,7 @@
 </head>
 <body>
 <div class="container">
-  <h2>Your Expenses</h2>
+  <h2>Your income and expense</h2>
 
   
   <!-- ✅ Expense Table -->
@@ -124,7 +124,7 @@
   <hr>
 
   <!-- ✅ Add Expense Form -->
-  <h3>Add New Expense</h3>
+  <h3>Add New Income or Expense</h3>
   <form th:action="@{/expenses/save}" method="post" th:object="${expense}">
     <label>Category:</label>
     <input type="text" th:field="*{category}" placeholder="e.g. Food, Rent" required>
@@ -145,7 +145,7 @@
     <label>Date:</label>
     <input type="date" th:field="*{date}" required>
 
-    <button type="submit">Add Expense</button>
+    <button type="submit">Add Amount</button>
   </form>
 
   <br>

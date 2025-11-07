@@ -1,5 +1,7 @@
 package com.example.SmartSpendexpensetracker.controller;
 
+import com.example.SmartSpendexpensetracker.exception.InvalidTokenException;
+import com.example.SmartSpendexpensetracker.exception.UserNotFoundException;
 import com.example.SmartSpendexpensetracker.model.UserSpend;
 import com.example.SmartSpendexpensetracker.repository.UserspendRepository;
 import com.example.SmartSpendexpensetracker.service.PasswordResetService;
@@ -23,12 +25,12 @@ public class AuthController {
         this.passwordResetService = passwordResetService;
     }
 
-
     // Home page
     @GetMapping("/")
     public String homePage() {
-        return "index"; // index.html
+        return "index";
     }
+
     // -------------------- Signup --------------------
     @GetMapping("/signup")
     public String signupForm(Model model) {
@@ -38,24 +40,17 @@ public class AuthController {
 
     @PostMapping("/signup")
     public String signupSubmit(@ModelAttribute("userForm") @Valid UserSpend user, Model model) {
-        try {
-            userService.registerUser(user.getEmail(), user.getPassword(), user.getFullName());
-            model.addAttribute("message", "Registration successful! Check your email to verify your account.");
-            return "message";
-        } catch (IllegalArgumentException ex) {
-            model.addAttribute("error", ex.getMessage());
-            return "signup";
-        }
+        userService.registerUser(user.getEmail(), user.getPassword(), user.getFullName());
+        model.addAttribute("message", "Registration successful! Check your email to verify your account.");
+        return "message";
     }
 
     // -------------------- Email Verification --------------------
     @GetMapping("/verify")
     public String verify(@RequestParam("token") String token, Model model) {
         boolean ok = userService.verifyToken(token);
-        if (ok)
-            model.addAttribute("message", "Email verified! You can now login.");
-        else
-            model.addAttribute("error", "Invalid or expired verification link.");
+        if (!ok) throw new InvalidTokenException("Invalid or expired verification link.");
+        model.addAttribute("message", "Email verified! You can now login.");
         return "message";
     }
 
@@ -69,17 +64,12 @@ public class AuthController {
     @PostMapping("/login")
     public String handleLogin(@RequestParam("email") String email,
                               @RequestParam("password") String password,
-                              HttpSession session,
-                              Model model) {
-        boolean valid = userService.validateLogin(email, password);
-
-        if (valid) {
-            session.setAttribute("userEmail", email); // store user info in session
-            return "redirect:/dashboard"; // ✅ redirect to dashboard
-        } else {
-            model.addAttribute("error", "Invalid email or password");
-            return "login";
+                              HttpSession session) {
+        if (!userService.validateLogin(email, password)) {
+            throw new UserNotFoundException("Invalid email or password");
         }
+        session.setAttribute("userEmail", email);
+        return "redirect:/dashboard";
     }
 
     // -------------------- Forgot Password --------------------
@@ -100,10 +90,7 @@ public class AuthController {
     @GetMapping("/reset-password")
     public String resetPasswordPage(@RequestParam("token") String token, Model model) {
         boolean valid = passwordResetService.isValidPasswordResetToken(token);
-        if (!valid) {
-            model.addAttribute("error", "Invalid or expired token");
-            return "message";
-        }
+        if (!valid) throw new InvalidTokenException("Invalid or expired token");
         model.addAttribute("token", token);
         return "reset-password";
     }
@@ -113,10 +100,8 @@ public class AuthController {
                                       @RequestParam("password") String password,
                                       Model model) {
         boolean ok = passwordResetService.resetPassword(token, password);
-        if (ok)
-            model.addAttribute("message", "Password reset successfully! You can now login.");
-        else
-            model.addAttribute("error", "Could not reset password (invalid/expired token).");
+        if (!ok) throw new InvalidTokenException("Could not reset password (invalid/expired token).");
+        model.addAttribute("message", "Password reset successfully! You can now login.");
         return "message";
     }
 
@@ -124,20 +109,18 @@ public class AuthController {
     @GetMapping("/dashboard")
     public String dashboard(HttpSession session, Model model) {
         String email = (String) session.getAttribute("userEmail");
+        if (email == null) return "redirect:/login";
 
-        if (email == null) {
-            return "redirect:/login"; // no session → redirect to login
-        }
-
-        UserSpend user = userRepository.findByEmail(email).orElse(null);
+        UserSpend user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
         model.addAttribute("user", user);
-        return "dashboard"; // shows dashboard.html
+        return "dashboard";
     }
 
     // -------------------- Logout --------------------
     @GetMapping("/logout")
     public String logout(HttpSession session) {
-        session.invalidate(); // clear session
-        return "redirect:/"; // back to home
+        session.invalidate();
+        return "redirect:/";
     }
 }
