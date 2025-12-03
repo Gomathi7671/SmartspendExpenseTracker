@@ -35,11 +35,11 @@ public class GlobalExceptionHandler {
     }
 
     // Handle all other exceptions
-    @ExceptionHandler(Exception.class)
-    public String handleGenericException(Exception ex, Model model) {
-        model.addAttribute("error", "Unexpected error occurred. Please contact support.");
-        return "message";
-    }
+    // @ExceptionHandler(Exception.class)
+    // public String handleGenericException(Exception ex, Model model) {
+    //     model.addAttribute("error", "Unexpected error occurred. Please contact support.");
+    //     return "message";
+    // }
 
 
     @ExceptionHandler(ResourceNotFoundException.class)
